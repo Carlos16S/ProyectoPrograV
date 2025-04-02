@@ -1,4 +1,4 @@
-package com.Notes.proyecto_carlos_maureen.ui.theme
+package com.Notes.proyecto_carlos_maureen.myapplication.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

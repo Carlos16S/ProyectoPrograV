@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1009748302201",
+    "project_id": "notas-progav",
+    "storage_bucket": "notas-progav.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009748302201:android:e3669b2b0981760e96b7a8",
+        "android_client_info": {
+          "package_name": "com.Notes.proyecto_carlos_maureen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfzLjV6NTVa73Qn7wUiGacka7kLAoBIw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
