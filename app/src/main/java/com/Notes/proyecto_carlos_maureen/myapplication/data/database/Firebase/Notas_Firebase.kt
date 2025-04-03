@@ -11,7 +11,7 @@ class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
                                          private val firestore: FirebaseFirestore) {
 
     private val coleccion1="AplicationBD"
-    private val notasColeccion="Notas"
+    private val collection2="Notas"
 
     private val Usuario:String
         get() = auth.currentUser?.email?: throw IllegalStateException("Usuario no autenticado")
@@ -21,11 +21,14 @@ class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
 
 
     fun guardarNotas(nota: NotasFB){
+        val coleccionDestino = if(nota.recordatorio){ "Recordatorio"}else{"Notas"}
+
+
         val document = if (nota.id.isEmpty()) {
             // Nuevo documento con ID automático
             firestore.collection(coleccion1)
                 .document(Usuario)
-                .collection(notasColeccion)
+                .collection(coleccionDestino)
                 .document()
                 .also { nota.id = it.id }
         }else{
@@ -33,7 +36,7 @@ class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
             firestore
                 .collection(coleccion1)
                 .document(Usuario)
-                .collection(notasColeccion)
+                .collection(coleccionDestino)
                 .document(nota.id)
 
 
@@ -52,7 +55,7 @@ class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
             firestore
                 .collection(coleccion1)
                 .document(Usuario)
-                .collection(notasColeccion)
+                .collection(collection2)
                 .document(nota.id)
                 .delete()
                 .addOnSuccessListener {
@@ -70,7 +73,7 @@ class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
         firestore
             .collection(coleccion1)
             .document(Usuario)
-            .collection(notasColeccion)
+            .collection(collection2)
             .addSnapshotListener { instantanea, _error ->
 
                 if (_error != null) {
