@@ -1,5 +1,6 @@
 package com.Notes.proyecto_carlos_maureen.myapplication.data.database.Firebase
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.Notes.proyecto_carlos_maureen.myapplication.model.Recordatorios
 import com.google.firebase.auth.FirebaseAuth
@@ -48,6 +49,21 @@ class Recordatorios_Firebase @Inject constructor(private val auth: FirebaseAuth,
     }
 
     fun elimiarRecordatorio(recordatorios: Recordatorios){
+        if(recordatorios.id.isNotEmpty()){
+            firestore.collection(coleccion1)
+                .document(Usuario)
+                .collection(collection2)
+                .document(recordatorios.id)
+                .delete()
+                .addOnSuccessListener {
+                    Log.d("DeleteObjeto", "Objeto eliminado")
+                }
+                .addOnCanceledListener {
+                    Log.e("DeleteObjeto", "Objeto NO eliminado")
+
+                }
+
+        }
 
 
 
@@ -56,4 +72,4 @@ class Recordatorios_Firebase @Inject constructor(private val auth: FirebaseAuth,
 
 
 
-}
+  }

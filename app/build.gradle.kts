@@ -67,9 +67,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    implementation(libs.accompanist.flowlayout)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.runtime.livedata.v167)
     kapt(libs.hilt.android.compiler)
 
     //Firebase
