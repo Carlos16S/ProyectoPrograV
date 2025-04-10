@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "559310265456",
+    "project_id": "notas-proyecto-f51f7",
+    "storage_bucket": "notas-proyecto-f51f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559310265456:android:65db442f0c5985cf6928b5",
+        "android_client_info": {
+          "package_name": "com.Notes.proyecto_carlos_maureen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAg_f_yqrtWykZc95FJX0w8KeByGS-wh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559310265456:android:a4ee4299ca55e76a6928b5",
+        "android_client_info": {
+          "package_name": "com.notes.notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAg_f_yqrtWykZc95FJX0w8KeByGS-wh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
