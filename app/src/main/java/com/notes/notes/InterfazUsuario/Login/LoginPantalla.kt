@@ -1,6 +1,7 @@
 package com.notes.notes.InterfazUsuario.Login
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -59,7 +61,9 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel,navController: NavContro
     val loginEnable:Boolean by viewModel.LoginEnable.observeAsState(initial = false)
     val coroutineScope= rememberCoroutineScope()
     val userExists: Boolean? by viewModel.verificarUser.observeAsState(initial = false)
-
+    val idUsuario: String by viewModel.idU.observeAsState(initial = "")
+    val context = LocalContext.current
+    val currentUser by viewModel.currentUser
 
     if(isLoading){
         Box(Modifier.fillMaxSize()){
@@ -76,23 +80,18 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel,navController: NavContro
             Spacer(modifier = Modifier.padding(8.dp))
             Olvidocontrasena(Modifier.align(Alignment.End))
             Spacer(modifier = Modifier.padding(8.dp))
-            BotoLogin(loginEnable,navController) {
+            BotoLogin(loginEnable, navController) {
                 coroutineScope.launch {
-                    viewModel.validarUsuario(email, contrasena)
-                    if (userExists==true ) {
+                    val success = viewModel.login_(email, contrasena)
+                    if (success) {
                         navController.navigate("HomePantalla")
+                    } else {
+                        Toast.makeText(context, "Usuario no válido", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
             // Observa userExists y reacciona cuando cambia:
-            LaunchedEffect(userExists) {
-                if (userExists == true) {
-                    // Acción a realizar si el usuario existe, por ejemplo:
-                    viewModel.SelectorBoton() // o navegación
-                } else if (userExists == false) {
-                    Log.e("Login", "El usuario no existe en la base de datos")
-                }
-            }
+
             Spacer(modifier = Modifier.padding(8.dp))
             BotonRegistro(
                 navController
