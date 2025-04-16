@@ -3,18 +3,20 @@ package com.notes.notes.data.databases.Firebase
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.notes.notes.model.NotasFB
+import com.notes.notes.model.Usuarios
 import javax.inject.Inject
 
     class Notas_Firebase @Inject constructor(private val auth: FirebaseAuth,
                                              private val firestore: FirebaseFirestore) {
 
-        private val coleccion1="AplicationBD"
-        private val collection2="Notas"
+
+        private val collection1="Notas"
 
         private val Usuario:String
-            get() = auth.currentUser?.email?: throw IllegalStateException("Usuario no autenticado")
+            get() = auth.currentUser?.uid?: throw IllegalStateException("Usuario no autenticado")
 
 
 
@@ -26,15 +28,16 @@ import javax.inject.Inject
 
             val document = if (nota.id.isEmpty()) {
                 // Nuevo documento con ID automático
-                firestore.collection(coleccion1)
+                firestore.collection("Usuarios")
                     .document(Usuario)
                     .collection(coleccionDestino)
-                    .document()
-                    .also { nota.id = it.id }
+                    .document().also {
+                        nota.id = it.id             // Asigna ID automáticamente
+                    }
             }else{
                 // Si encuentra el id de la nota, la actualiza
                 firestore
-                    .collection(coleccion1)
+                    .collection("Usuarios")
                     .document(Usuario)
                     .collection(coleccionDestino)
                     .document(nota.id)
@@ -53,9 +56,7 @@ import javax.inject.Inject
 
             if (nota.id.isNotEmpty()) {
                 firestore
-                    .collection(coleccion1)
-                    .document(Usuario)
-                    .collection(collection2)
+                    .collection(collection1)
                     .document(nota.id)
                     .delete()
                     .addOnSuccessListener {
@@ -68,31 +69,24 @@ import javax.inject.Inject
 
             }
         }
-        fun getNotas(): MutableLiveData<List<NotasFB>> {
-            val listaNotas = MutableLiveData<List<NotasFB>>()
-            firestore
-                .collection(coleccion1)
-                .document(Usuario)
-                .collection(collection2)
-                .addSnapshotListener { instantanea, _error ->
+        fun obtenerNotasPorUsuario(uid: String, onResult: (List<NotasFB>) -> Unit) {
+            val firestore = FirebaseFirestore.getInstance()
 
-                    if (_error != null) {
+
+            firestore.collection("Usuarios")
+                .document(uid)
+                .collection("Notas")
+                .addSnapshotListener { notasSnapshot, error ->
+                    if (error != null) {
+
+                        onResult(emptyList())
                         return@addSnapshotListener
                     }
-                    if (instantanea != null) {
 
-                        val lista = ArrayList<NotasFB>()
-                        instantanea.documents.forEach {
-                            var objetos = it.toObject(NotasFB::class.java)
-                            if (objetos != null) {
-                                lista.add(objetos)
-                            }
-                        }
-
-
-                        listaNotas.value = lista
-                    }
+                    // Convertir los documentos a objetos NotasFB
+                    val notas = notasSnapshot?.toObjects(NotasFB::class.java) ?: emptyList()
+                    onResult(notas)
                 }
-            return listaNotas
         }
+
     }
