@@ -89,4 +89,26 @@ import javax.inject.Inject
                 }
         }
 
+        fun editarNota(nota: NotasFB) {
+            val coleccionDestino = if (nota.recordatorio) "Recordatorio" else "Notas"
+
+            // Validamos que la nota tenga un ID asignado
+            if (nota.id.isEmpty()) {
+                Log.e("Firestore", "No se puede editar una nota sin ID")
+                return
+            }
+
+            firestore.collection("Usuarios")
+                .document(Usuario)
+                .collection(coleccionDestino)
+                .document(nota.id)
+                .set(nota)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "Nota editada correctamente")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error al editar nota", e)
+                }
+        }
+
     }

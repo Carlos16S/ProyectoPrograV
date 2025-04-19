@@ -12,7 +12,9 @@ import com.notes.notes.InterfazUsuario.Login.LoginPantalla
 import com.notes.notes.InterfazUsuario.Login.RegistroPantalla
 import com.notes.notes.InterfazUsuario.MostrarNotas
 import com.notes.notes.InterfazUsuario.PantallaCrearNotas
+import com.notes.notes.InterfazUsuario.PantallaEditarNota
 import com.notes.notes.viewModel.CrearViewModel
+import com.notes.notes.viewModel.EditarViewModel
 import com.notes.notes.viewModel.HomeViewModel
 import com.notes.notes.viewModel.LoginViewModel
 import com.notes.notes.viewModel.RegistroVieModel
@@ -24,6 +26,7 @@ fun NavGraph_() {
     val registroVieModel:RegistroVieModel= hiltViewModel()
     val homeViewModel:HomeViewModel=hiltViewModel()
     val Crearviewmodel:CrearViewModel= hiltViewModel()
+    val EditarViewModel:EditarViewModel= hiltViewModel()
     NavHost(navController = navController, startDestination = "LoginPantalla") {
         composable("LoginPantalla"){
 
@@ -47,6 +50,19 @@ fun NavGraph_() {
 
 
         }
+
+        composable("PantallaEditarNota") {
+            val notaAEditar = homeViewModel.notaSeleccionada
+            if (notaAEditar != null) {
+                PantallaEditarNota(
+                    navController = navController,
+                    viewModel = Crearviewmodel,
+                    viewModelE = EditarViewModel,
+                    notaExistente = notaAEditar
+                )
+            }
+        }
+
 
 
     }

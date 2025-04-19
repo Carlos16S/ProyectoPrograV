@@ -1,7 +1,10 @@
 package com.notes.notes.InterfazUsuario
 
-import android.icu.text.CaseMap.Title
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.icu.util.Calendar
 import android.net.Uri
+import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -17,20 +20,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,10 +40,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import com.google.firebase.firestore.auth.User
 import com.notes.notes.model.NotasFB
-import com.notes.notes.model.Usuarios
+import com.notes.notes.model.Recordatorios
 import com.notes.notes.viewModel.CrearViewModel
 
 
@@ -77,27 +80,33 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
         recordatorio = IsRecordatorio,
         usuarioId =usuarioID
 
-       // Titulo = titulo,
-       // Contenido = contenido,
-       // ContenidoMultimedia = contenidoMultimedia,
-       // recordatorio = isRecordatorio,
-       // usuarios = usuario
     )
+    val redordatorioAgregar = Recordatorios(Titulo =titulo )
 
     Column {
         TittuloNota(titulo =titulo,onTituloChanged = { viewModel.onTituloChanged(it) } )
-        Spacer(modifier = Modifier.padding(5.dp))
-        ContenidoNota(Contenido = contenido,onContenidoChanged={viewModel.onContenidoChanged(it)})
-        Spacer(modifier = Modifier.padding(5.dp))
-        ContenidoMultimedia( onUriSelected = { uri ->
-            viewModel.onContenidoMultimediaSeleccionado(uri)
-        })
-        Spacer(modifier = Modifier.padding(5.dp))
-        IsRecordatorio(viewModel = viewModel)
+       if(!IsRecordatorio) {
 
-        GuardarNota(navController =navController, viewModel = viewModel,notaAgregar )
+           Spacer(modifier = Modifier.padding(5.dp))
+           ContenidoNota(
+               Contenido = contenido,
+               onContenidoChanged = { viewModel.onContenidoChanged(it) })
+           Spacer(modifier = Modifier.padding(5.dp))
+           ContenidoMultimedia(onUriSelected = { uri ->
+               viewModel.onContenidoMultimediaSeleccionado(uri)
+           })
+           Spacer(modifier = Modifier.padding(5.dp))
+           IsRecordatorio(viewModel = viewModel)
+
+           GuardarNota(navController = navController, viewModel = viewModel, notaAgregar)
+
+       }
+        else{
+           IsRecordatorio(viewModel = viewModel)
+           GuardarNota(navController = navController, viewModel = viewModel, notaAgregar)
 
 
+        }
 
 
 
@@ -106,20 +115,23 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
 
 }
 
+
+
 @Composable
 fun GuardarNota(navController: NavController,viewModel: CrearViewModel,notasFB: NotasFB) {
     Box() {
         Button(
-            onClick = { viewModel.agregarNotas(notasFB) },
+            onClick = { viewModel.agregarNotas(notasFB)
+                      navController.navigate("HomePantalla")},
             modifier = Modifier.align(Alignment.TopCenter)
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Guardar nota",
+                contentDescription = "Guardar ",
                 tint = Color.White // O el color que quieras para el ícono
             )
             Spacer(modifier = Modifier.width(8.dp)) // Espacio entre ícono y texto (opcional)
-            Text("Eliminar") // Este texto es opcional
+            Text("Guardar") // Este texto es opcional
         }
     }
 
@@ -141,6 +153,11 @@ fun TittuloNota(titulo:String,onTituloChanged: (String)-> Unit) {
 
 @Composable
 fun IsRecordatorio(viewModel: CrearViewModel)  {
+    var mostrarDialogo by remember { mutableStateOf(false) }
+    val calendar= Calendar.getInstance()
+    val context= LocalContext.current
+    val showDatePicker = remember { mutableStateOf(false) }
+    val showTimePicker = remember { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(8.dp)
@@ -151,9 +168,55 @@ fun IsRecordatorio(viewModel: CrearViewModel)  {
             checked = viewModel.isRecordatorio,
             onCheckedChange = { seleccionado ->
                 viewModel.cambiarRecordatorio(seleccionado)
+                if (seleccionado) {
+                    showDatePicker.value = true
+                }
             }
         )
     }
+    if (showDatePicker.value) {
+        DatePickerDialog(
+            context,
+            { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                showDatePicker.value = false
+                showTimePicker.value = true
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+    if (showTimePicker.value) {
+        TimePickerDialog(
+            context,
+            { _, hour, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                viewModel.setFechaHora(calendar) // Puedes guardar la fecha aquí
+                showTimePicker.value = false
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        ).show()
+    }
+    if (mostrarDialogo) {
+        Dialog(onDismissRequest = { mostrarDialogo = false }) {
+            ElegirFechaHora(
+                onFechaHoraSeleccionada = { calendar ->
+                    viewModel.setFechaHora(calendar)
+                    viewModel.programarNotificacion(context, titulo = viewModel.titulo)
+                    mostrarDialogo = false
+                }
+            )
+        }
+    }
+
+
+
 }
 @Composable
 fun ContenidoMultimedia(onUriSelected: (Uri?) -> Unit) {
@@ -197,6 +260,33 @@ fun ContenidoNota(Contenido:String,onContenidoChanged: (String)-> Unit) {TextFie
     maxLines = Int.MAX_VALUE,
     singleLine = false
 )
+}
+
+@Composable
+fun ElegirFechaHora(onFechaHoraSeleccionada: (Calendar) -> Unit) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    var fechaElegida by remember { mutableStateOf<Calendar?>(null) }
+
+    AndroidView(factory = { ctx ->
+        DatePickerDialog(ctx, { _, year, month, dayOfMonth ->
+            val fecha = Calendar.getInstance()
+            fecha.set(Calendar.YEAR, year)
+            fecha.set(Calendar.MONTH, month)
+            fecha.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            TimePickerDialog(ctx, { _, hour, minute ->
+                fecha.set(Calendar.HOUR_OF_DAY, hour)
+                fecha.set(Calendar.MINUTE, minute)
+                onFechaHoraSeleccionada(fecha)
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
+            show()
+        }
+        View(context) // Retornamos una vista vacía porque AndroidView requiere una vista
+    })
 }
 
 
