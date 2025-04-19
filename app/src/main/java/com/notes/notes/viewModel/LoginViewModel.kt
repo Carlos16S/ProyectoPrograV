@@ -57,6 +57,8 @@ class LoginViewModel @Inject constructor(private val auth: FirebaseAuth): ViewMo
 
     private fun Contrasenavalida(password: String):Boolean?= password.length >= 6
 
+    private fun emailComprobante(){}
+
     fun login(email: String, password: String) {
 
 
