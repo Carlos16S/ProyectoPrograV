@@ -20,7 +20,8 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Notas_Fi
 
 
 
-    private val userId = auth.currentUser?.uid
+    private val userId: String?
+        get() = auth.currentUser?.uid
 
     var notaSeleccionada:NotasFB? by mutableStateOf(null)
         private set
@@ -33,17 +34,20 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Notas_Fi
 
     }
     fun cerrarSesion() {
-        FirebaseAuth.getInstance().signOut()
+        auth.signOut()
+       // userId = null
+       // notas = emptyList()
     }
 
     fun mostrarNotas() {
-        userId?.let { uid ->
-            firebaseRepository.obtenerNotasPorUsuario(uid) { nuevasNotas ->
-                notas = nuevasNotas
-            }
-        } ?: run {
-            notas = emptyList()
+    userId?.let { uid ->
+        firebaseRepository.obtenerNotasPorUsuario(uid) { nuevasNotas ->
+            notas = nuevasNotas
         }
+    } ?: run {
+        // Si no hay usuario logueado, limpias las notas
+        notas = emptyList()
     }
+}
 
 }
