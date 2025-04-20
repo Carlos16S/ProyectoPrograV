@@ -28,6 +28,7 @@ fun NavGraph_() {
     val homeViewModel:HomeViewModel=hiltViewModel()
     val Crearviewmodel:CrearViewModel= hiltViewModel()
     val EditarViewModel:EditarViewModel= hiltViewModel()
+    val loginview_:LoginViewModel= hiltViewModel()
     NavHost(navController = navController, startDestination = "LoginPantalla") {
         composable("LoginPantalla"){
 
@@ -41,7 +42,7 @@ fun NavGraph_() {
         }
         composable("HomePantalla"){
 
-            HomePantalla(navController = navController, viewModel = homeViewModel)
+            HomePantalla(navController = navController, viewModel = homeViewModel, viewLogin = loginview_)
 
         }
         composable("CrearNotas"){

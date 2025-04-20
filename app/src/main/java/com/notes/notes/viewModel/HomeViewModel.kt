@@ -32,6 +32,9 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Notas_Fi
         notaSeleccionada=notas
 
     }
+    fun cerrarSesion() {
+        FirebaseAuth.getInstance().signOut()
+    }
 
     fun mostrarNotas() {
         userId?.let { uid ->

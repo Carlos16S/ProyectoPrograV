@@ -27,7 +27,9 @@ class LoginViewModel @Inject constructor(private val auth: FirebaseAuth): ViewMo
         _user.value = auth.currentUser  // Verificar si el usuario ya está autenticado
     }
 
-
+    fun limpiarCampos() {
+        onLoginChanged("", "") // Vacía el email y contraseña
+    }
 
     private val _email= MutableLiveData<String>()
     val email: LiveData<String> =_email

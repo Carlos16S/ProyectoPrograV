@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,13 +65,14 @@ import androidx.navigation.NavController
 import com.notes.notes.R
 import com.notes.notes.model.NotasFB
 import com.notes.notes.viewModel.HomeViewModel
+import com.notes.notes.viewModel.LoginViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 
 
 
 @Composable
-fun HomePantalla(navController: NavController, viewModel: HomeViewModel) {
+fun HomePantalla(navController: NavController, viewModel: HomeViewModel,viewLogin:LoginViewModel) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -88,9 +90,21 @@ fun HomePantalla(navController: NavController, viewModel: HomeViewModel) {
                 Text("Menú", modifier = Modifier.align(Alignment.CenterHorizontally))
                 Divider()
                 NavigationDrawerItem(
-                    label = { Text("Barra lateral Exitosa") },
+                    label = { Text("Ver recordatorios") },
                     onClick = { navController.navigate("RecordatorioPantalla") },//Mostrar Recordatorios
                     selected = true,
+                )
+                Spacer(modifier = Modifier.padding(7.dp))
+                NavigationDrawerItem(
+                    label = { Text("Cerrar Sesión") },
+                    onClick = {
+                        viewModel.cerrarSesion()
+                        viewLogin.limpiarCampos()
+                        navController.navigate("LoginPantalla") {
+                            popUpTo("HomePantalla") { inclusive = true } // Elimina Home del historial
+                        }
+                    },
+                    selected = false
                 )
             }
         }

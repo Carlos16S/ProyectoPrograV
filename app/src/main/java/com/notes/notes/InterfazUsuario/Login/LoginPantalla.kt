@@ -55,6 +55,8 @@ fun LoginPantalla(  viewModel: LoginViewModel , navController: NavController){
 
 @Composable
 fun Login(modifier: Modifier, viewModel: LoginViewModel,navController: NavController) {
+
+
     val email:String by viewModel.email.observeAsState(initial = "")
     val contrasena:String by viewModel.password.observeAsState(initial = "")
     val isLoading:Boolean by viewModel.isLoading.observeAsState(initial = false)
