@@ -60,7 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.android.gms.base.R
+
+import com.notes.notes.R
 import com.notes.notes.model.NotasFB
 import com.notes.notes.viewModel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -88,7 +89,7 @@ fun HomePantalla(navController: NavController, viewModel: HomeViewModel) {
                 Divider()
                 NavigationDrawerItem(
                     label = { Text("Barra lateral Exitosa") },
-                    onClick = { navController.navigate("algunlado") },//Mostrar Recordatorios
+                    onClick = { navController.navigate("RecordatorioPantalla") },//Mostrar Recordatorios
                     selected = true,
                 )
             }
@@ -131,7 +132,7 @@ fun HomePantalla(navController: NavController, viewModel: HomeViewModel) {
                 shape = CircleShape
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.common_full_open_on_phone),
+                    painter = painterResource(id = R.drawable.ic_launcher_background),
                     contentDescription = "Agregar nota",
                     modifier = Modifier.size(24.dp)
                 )

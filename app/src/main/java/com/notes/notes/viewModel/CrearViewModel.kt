@@ -43,7 +43,7 @@ fun agregarNotas(nota:NotasFB){
 
 }
 
-    // Funciones para actualizar los campos
+
     fun onTituloChanged(nuevoTitulo: String) {
         titulo = nuevoTitulo
     }
@@ -53,11 +53,11 @@ fun agregarNotas(nota:NotasFB){
     }
 
 
-    var isRecordatorio by mutableStateOf(false)
+    var is_Recordatorio by mutableStateOf(false)
         private set
 
     fun cambiarRecordatorio(nuevoValor: Boolean) {
-        isRecordatorio = nuevoValor
+        is_Recordatorio = nuevoValor
     }
     fun onContenidoMultimediaSeleccionado(uri: Uri?) {
 
@@ -92,6 +92,13 @@ fun agregarNotas(nota:NotasFB){
                 pendingIntent
             )
         }
+    }
+
+    fun limpiarCampos() {
+        titulo = ""
+        contenido = ""
+        contenidoMultimedia = null
+        is_Recordatorio = false
     }
 
 

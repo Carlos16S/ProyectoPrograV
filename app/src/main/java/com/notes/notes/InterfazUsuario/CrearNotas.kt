@@ -29,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,11 +65,15 @@ fun PantallaCrearNotas(viewModel: CrearViewModel,navController: NavController){
 
 @Composable
 fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavController) {
+
+    LaunchedEffect(Unit) {
+        viewModel.limpiarCampos()
+    }
     val titulo = viewModel.titulo
     val  contenido =viewModel.contenido
     val contenidoMultimedia=viewModel.contenidoMultimedia
-    val IsRecordatorio=viewModel.isRecordatorio
- val multimediastring=contenidoMultimedia.toString()
+    val _Recordatorio=viewModel.is_Recordatorio
+    val multimediastring=contenidoMultimedia.toString()
 
     val usuarioID=viewModel.userId.toString()
     val notaAgregar = NotasFB(
@@ -77,41 +82,47 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
         Titulo = titulo,
         Contenido = contenido,
         ContenidoMultimedia =multimediastring ,
-        recordatorio = IsRecordatorio,
+        recordatorio = _Recordatorio,
         usuarioId =usuarioID
 
     )
     val redordatorioAgregar = Recordatorios(Titulo =titulo )
 
     Column {
-        TittuloNota(titulo =titulo,onTituloChanged = { viewModel.onTituloChanged(it) } )
-       if(!IsRecordatorio) {
+        TittuloNota(
+            titulo = titulo,
+            onTituloChanged = { viewModel.onTituloChanged(it) }
+        )
 
-           Spacer(modifier = Modifier.padding(5.dp))
-           ContenidoNota(
-               Contenido = contenido,
-               onContenidoChanged = { viewModel.onContenidoChanged(it) })
-           Spacer(modifier = Modifier.padding(5.dp))
-           ContenidoMultimedia(onUriSelected = { uri ->
-               viewModel.onContenidoMultimediaSeleccionado(uri)
-           })
-           Spacer(modifier = Modifier.padding(5.dp))
-           IsRecordatorio(viewModel = viewModel)
+        // ✅ Mostramos el bloque SOLO si el switch está apagado
+        if (!_Recordatorio) {
+            Spacer(modifier = Modifier.padding(5.dp))
 
-           GuardarNota(navController = navController, viewModel = viewModel, notaAgregar)
+            ContenidoNota(
+                Contenido = contenido,
+                onContenidoChanged = { viewModel.onContenidoChanged(it) }
+            )
 
-       }
-        else{
-           IsRecordatorio(viewModel = viewModel)
-           GuardarNota(navController = navController, viewModel = viewModel, notaAgregar)
+            Spacer(modifier = Modifier.padding(5.dp))
 
+            ContenidoMultimedia(onUriSelected = { uri ->
+                viewModel.onContenidoMultimediaSeleccionado(uri)
+            })
 
+            Spacer(modifier = Modifier.padding(5.dp))
         }
 
+        // ✅ Siempre mostrar el switch
+        SelectorRecordatorio(viewModel = viewModel)
 
-
-
+        // ✅ Siempre mostrar el botón de guardar
+        GuardarNota(
+            navController = navController,
+            viewModel = viewModel,
+            notaAgregar
+        )
     }
+
 
 }
 
@@ -152,12 +163,16 @@ fun TittuloNota(titulo:String,onTituloChanged: (String)-> Unit) {
 }
 
 @Composable
-fun IsRecordatorio(viewModel: CrearViewModel)  {
+fun SelectorRecordatorio(viewModel: CrearViewModel) {
+    val calendar = remember { Calendar.getInstance() }
+    val context = LocalContext.current
+
+    // Estados para controlar cuándo mostrar los diálogos
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
     var mostrarDialogo by remember { mutableStateOf(false) }
-    val calendar= Calendar.getInstance()
-    val context= LocalContext.current
-    val showDatePicker = remember { mutableStateOf(false) }
-    val showTimePicker = remember { mutableStateOf(false) }
+
+    // UI del switch
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(8.dp)
@@ -165,44 +180,54 @@ fun IsRecordatorio(viewModel: CrearViewModel)  {
         Text(text = "¿Agregar como recordatorio?")
         Spacer(modifier = Modifier.width(8.dp))
         Switch(
-            checked = viewModel.isRecordatorio,
+            checked = viewModel.is_Recordatorio,
             onCheckedChange = { seleccionado ->
                 viewModel.cambiarRecordatorio(seleccionado)
                 if (seleccionado) {
-                    showDatePicker.value = true
+                    showDatePicker = true
                 }
             }
         )
     }
-    if (showDatePicker.value) {
-        DatePickerDialog(
-            context,
-            { _, year, month, day ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
-                showDatePicker.value = false
-                showTimePicker.value = true
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+
+    // Mostrar DatePicker solo una vez cuando showDatePicker cambia a true
+    LaunchedEffect(showDatePicker) {
+        if (showDatePicker) {
+            DatePickerDialog(
+                context,
+                { _, year, month, day ->
+                    calendar.set(Calendar.YEAR, year)
+                    calendar.set(Calendar.MONTH, month)
+                    calendar.set(Calendar.DAY_OF_MONTH, day)
+                    showDatePicker = false
+                    showTimePicker = true
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
     }
-    if (showTimePicker.value) {
-        TimePickerDialog(
-            context,
-            { _, hour, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                viewModel.setFechaHora(calendar) // Puedes guardar la fecha aquí
-                showTimePicker.value = false
-            },
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            true
-        ).show()
+
+    // Mostrar TimePicker
+    LaunchedEffect(showTimePicker) {
+        if (showTimePicker) {
+            TimePickerDialog(
+                context,
+                { _, hour, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hour)
+                    calendar.set(Calendar.MINUTE, minute)
+                    viewModel.setFechaHora(calendar) // Guardar fecha y hora
+                    showTimePicker = false
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            ).show()
+        }
     }
+
+    // Dialog personalizado (opcional)
     if (mostrarDialogo) {
         Dialog(onDismissRequest = { mostrarDialogo = false }) {
             ElegirFechaHora(
@@ -214,9 +239,6 @@ fun IsRecordatorio(viewModel: CrearViewModel)  {
             )
         }
     }
-
-
-
 }
 @Composable
 fun ContenidoMultimedia(onUriSelected: (Uri?) -> Unit) {

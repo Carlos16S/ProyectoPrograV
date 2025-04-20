@@ -97,22 +97,7 @@ class LoginViewModel @Inject constructor(private val auth: FirebaseAuth): ViewMo
 
 
 }
-  // fun validarUsuario(email:String,password: String){
 
-  //     val coleccion1="Usuarios"
-  //     firestore.collection(coleccion1)
-  //         .whereEqualTo("correo",email)
-
-  //         .get()
-  //         .addOnSuccessListener { querySnapshot ->
-  //             _verificarUser.value = !querySnapshot.isEmpty // Si el documento existe, es true
-  //         }
-  //         .addOnFailureListener {
-  //             _verificarUser.value = false // Error o usuario no encontrado
-  //         }
-
-
-  // }
 
 
 

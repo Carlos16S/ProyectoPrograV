@@ -13,6 +13,7 @@ import com.notes.notes.InterfazUsuario.Login.RegistroPantalla
 import com.notes.notes.InterfazUsuario.MostrarNotas
 import com.notes.notes.InterfazUsuario.PantallaCrearNotas
 import com.notes.notes.InterfazUsuario.PantallaEditarNota
+import com.notes.notes.InterfazUsuario.RecordatorioPantalla
 import com.notes.notes.viewModel.CrearViewModel
 import com.notes.notes.viewModel.EditarViewModel
 import com.notes.notes.viewModel.HomeViewModel
@@ -61,6 +62,12 @@ fun NavGraph_() {
                     notaExistente = notaAEditar
                 )
             }
+        }
+        composable("RecordatorioPantalla"){
+
+            RecordatorioPantalla(navController = navController)
+
+
         }
 
 

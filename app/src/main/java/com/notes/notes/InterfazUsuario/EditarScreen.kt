@@ -57,11 +57,11 @@ fun EditarNotaContenido(
     val titulo = viewModel.titulo
     val contenido = viewModel.contenido
     val contenidoMultimedia = viewModel.contenidoMultimedia
-    val isRecordatorio = viewModel.isRecordatorio
+    val isRecordatorio = viewModel.is_Recordatorio
     val usuarioID = viewModel.userId.toString()
 
     val notaEditada = NotasFB(
-        id = notaOriginal.id, // Conserva el ID original si lo estás manejando
+        id = notaOriginal.id,
         Titulo = titulo,
         Contenido = contenido,
         ContenidoMultimedia = contenidoMultimedia.toString(),
@@ -78,7 +78,7 @@ fun EditarNotaContenido(
             viewModel.onContenidoMultimediaSeleccionado(uri)
         })
         Spacer(modifier = Modifier.padding(5.dp))
-        IsRecordatorio(viewModel = viewModel)
+
         BotonGuardarCambios(navController = navController, viewModel = viewModel, notaEditada,viewModelE=viewModelE)
     }
 }
