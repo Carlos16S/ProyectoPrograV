@@ -29,14 +29,16 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Notas_Fi
     var notas by mutableStateOf<List<NotasFB>>(emptyList())
         private set
 
+
+
+
     fun seleccionarNota(notas: NotasFB) {
         notaSeleccionada=notas
 
     }
     fun cerrarSesion() {
         auth.signOut()
-       // userId = null
-       // notas = emptyList()
+
     }
 
     fun mostrarNotas() {

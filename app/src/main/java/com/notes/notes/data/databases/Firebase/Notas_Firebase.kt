@@ -13,7 +13,7 @@ import javax.inject.Inject
                                              private val firestore: FirebaseFirestore) {
 
 
-        private val collection1="Notas"
+        private val collection1="Usuarios"
 
         private val Usuario:String
             get() = auth.currentUser?.uid?: throw IllegalStateException("Usuario no autenticado")
@@ -57,7 +57,9 @@ import javax.inject.Inject
             if (nota.id.isNotEmpty()) {
                 firestore
                     .collection(collection1)
-                    .document(nota.id)
+                    .document(Usuario)
+                    .collection("Notas")
+                    .document(nota.id)// nota.id
                     .delete()
                     .addOnSuccessListener {
                         Log.d("DeleteObjeto", "Objeto eliminado")
@@ -71,8 +73,6 @@ import javax.inject.Inject
         }
         fun obtenerNotasPorUsuario(uid: String, onResult: (List<NotasFB>) -> Unit) {
             val firestore = FirebaseFirestore.getInstance()
-
-
             firestore.collection("Usuarios")
                 .document(uid)
                 .collection("Notas")
@@ -84,7 +84,11 @@ import javax.inject.Inject
                     }
 
                     // Convertir los documentos a objetos NotasFB
-                    val notas = notasSnapshot?.toObjects(NotasFB::class.java) ?: emptyList()
+                    val notas = notasSnapshot?.documents?.mapNotNull { doc ->
+                        doc.toObject(NotasFB::class.java)?.copy(id = doc.id)
+                    } ?: emptyList()
+
+
                     onResult(notas)
                 }
         }

@@ -18,6 +18,7 @@ import com.notes.notes.viewModel.CrearViewModel
 import com.notes.notes.viewModel.EditarViewModel
 import com.notes.notes.viewModel.HomeViewModel
 import com.notes.notes.viewModel.LoginViewModel
+import com.notes.notes.viewModel.RecordatorioViewModel
 import com.notes.notes.viewModel.RegistroVieModel
 
 @Composable
@@ -29,6 +30,7 @@ fun NavGraph_() {
     val Crearviewmodel:CrearViewModel= hiltViewModel()
     val EditarViewModel:EditarViewModel= hiltViewModel()
     val loginview_:LoginViewModel= hiltViewModel()
+    val recoviewmodel:RecordatorioViewModel= hiltViewModel()
     NavHost(navController = navController, startDestination = "LoginPantalla") {
         composable("LoginPantalla"){
 
@@ -66,7 +68,7 @@ fun NavGraph_() {
         }
         composable("RecordatorioPantalla"){
 
-            RecordatorioPantalla(navController = navController)
+            RecordatorioPantalla(navController = navController, viewModel = recoviewmodel)
 
 
         }

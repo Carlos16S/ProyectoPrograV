@@ -109,20 +109,23 @@ fun HomePantalla(navController: NavController, viewModel: HomeViewModel,viewLogi
             }
         }
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            Spacer(modifier = Modifier.padding(20.dp))
             Text(
                 text = "Notas",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
+            Spacer(modifier = Modifier.padding(50.dp))
 
             // Muestra las notas
-            MostrarNotas(modifier = Modifier, notasFB = notas,navController = navController,viewModel=viewModel)
-
+            MostrarNotas(modifier = Modifier, notasFB =  viewModel.notas,navController = navController,viewModel=viewModel)
+            Spacer(modifier = Modifier.padding(7.dp))
             // Botón flotante
             btAgregarNotas(navController = navController)
         }
@@ -139,7 +142,7 @@ fun HomePantalla(navController: NavController, viewModel: HomeViewModel,viewLogi
                 .fillMaxSize()
         ) {
             FloatingActionButton(
-                onClick = { navController.navigate("CrearNotas") },//Poner ruta correcta al "CrearNotasScreen"
+                onClick = { navController.navigate("CrearNotas") },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp),

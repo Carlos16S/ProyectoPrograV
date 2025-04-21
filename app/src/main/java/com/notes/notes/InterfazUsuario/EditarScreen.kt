@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.navigation.NavController
 import com.notes.notes.model.NotasFB
 import com.notes.notes.viewModel.CrearViewModel
 import com.notes.notes.viewModel.EditarViewModel
+import com.notes.notes.viewModel.HomeViewModel
 
 @Composable
 fun PantallaEditarNota(
@@ -30,12 +32,17 @@ fun PantallaEditarNota(
     notaExistente: NotasFB,
     viewModelE:EditarViewModel
 ) {
+
+
     // Inicializa los valores del ViewModel con la nota existente
     LaunchedEffect(Unit) {
         viewModel.onTituloChanged(notaExistente.Titulo)
         viewModel.onContenidoChanged(notaExistente.Contenido)
         viewModel.onContenidoMultimediaSeleccionado(Uri.parse(notaExistente.ContenidoMultimedia))
         viewModel.cambiarRecordatorio(notaExistente.recordatorio)
+
+        // ✅ También inicializa el EditarViewModel con la nota seleccionada
+        viewModelE.seleccionarNota(notaExistente)
     }
 
     Box(
@@ -43,7 +50,7 @@ fun PantallaEditarNota(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        EditarNotaContenido(viewModel = viewModel, navController = navController, notaExistente,viewModelE=viewModelE)
+        EditarNotaContenido(viewModel = viewModel, navController = navController, notaOriginal = notaExistente,viewModelE=viewModelE)
     }
 }
 
@@ -53,6 +60,7 @@ fun EditarNotaContenido(
     navController: NavController,
     notaOriginal: NotasFB,
     viewModelE:EditarViewModel
+
 ) {
     val titulo = viewModel.titulo
     val contenido = viewModel.contenido
@@ -77,11 +85,41 @@ fun EditarNotaContenido(
         ContenidoMultimedia(onUriSelected = { uri ->
             viewModel.onContenidoMultimediaSeleccionado(uri)
         })
-        Spacer(modifier = Modifier.padding(5.dp))
-
         BotonGuardarCambios(navController = navController, viewModel = viewModel, notaEditada,viewModelE=viewModelE)
+        BotonElminar(navController = navController,viewModel=viewModelE )
+
+
+
+
+
+
     }
 }
+@Composable
+fun BotonElminar(navController: NavController, viewModel: EditarViewModel) {
+    val nota = viewModel.notaSeleccionada
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Button(
+            onClick = {
+                nota?.let {
+                    viewModel.eliminarNota(it)
+                    navController.navigate("HomePantalla")
+                }
+            },
+            modifier = Modifier.align(Alignment.BottomStart),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+        ) {
+            Text(text = "Eliminar nota", color = Color.White)
+        }
+    }
+}
+
+
 
 @Composable
 fun BotonGuardarCambios(navController: NavController, viewModel: CrearViewModel, nota: NotasFB,viewModelE: EditarViewModel) {

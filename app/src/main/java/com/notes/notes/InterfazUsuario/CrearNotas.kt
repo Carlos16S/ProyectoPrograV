@@ -86,7 +86,7 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
         usuarioId =usuarioID
 
     )
-    val redordatorioAgregar = Recordatorios(Titulo =titulo )
+    val redordatorioAgregar = Recordatorios(titulo =titulo )
 
     Column {
         TittuloNota(
