@@ -80,7 +80,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel,navController: NavContro
             Spacer(modifier = Modifier.padding(4.dp))
             IngresarContrasena(contrasena) { viewModel.onLoginChanged(email, it) }
             Spacer(modifier = Modifier.padding(8.dp))
-            Olvidocontrasena(Modifier.align(Alignment.End))
+
             Spacer(modifier = Modifier.padding(8.dp))
             BotoLogin(loginEnable, navController) {
                 coroutineScope.launch {

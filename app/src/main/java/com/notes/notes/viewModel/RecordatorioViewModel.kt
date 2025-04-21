@@ -42,4 +42,9 @@ class RecordatorioViewModel @Inject constructor(private val firebaseRepository: 
             recordatorios = emptyList()
         }
     }
+
+    fun eliminarRecordatorio(){
+
+        firebaseRepository.eliminarTodosLosRecordatorios()
+    }
 }

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,39 +30,85 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.notes.notes.model.Recordatorios
+import com.notes.notes.ui.theme.Terracota
+import com.notes.notes.ui.theme.VerdeMusgo
 import com.notes.notes.viewModel.RecordatorioViewModel
 
 @Composable
 fun RecordatorioPantalla(navController: NavController, viewModel: RecordatorioViewModel) {
-
     LaunchedEffect(Unit) {
         viewModel.MostrarRecordatorios()
     }
-    val recordatorios=viewModel.recordatorios
-    Box(
+    val recordatorios = viewModel.recordatorios
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Spacer(modifier = Modifier.padding(20.dp))
-        Titulo(modifier = Modifier.align(Alignment.TopCenter))
-        Spacer(modifier = Modifier.padding(20.dp))
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        // Sección superior con título
+        Titulo(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Sección central con lista de recordatorios (scrollable)
+        Box(
+            modifier = Modifier
+                .weight(1f) // Toma el espacio disponible, pero permite espacio para los botones abajo
         ) {
-            Spacer(modifier = Modifier.padding(20.dp))
             MostrarRecordatorios(viewModel = viewModel, recordatorios_ = recordatorios)
-            BotonSalir()
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Sección inferior con botones
+        EliminarRecordatorios(viewModel = viewModel)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BotonSalir(navController = navController)
     }
 }
 
 @Composable
-fun BotonSalir() {
-
+fun EliminarRecordatorios(viewModel: RecordatorioViewModel) {
+    Button(
+        onClick = {
+            viewModel.eliminarRecordatorio() // Aquí llamas a la función que elimina todos
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Red
+        )
+    ) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = "Eliminar todos los recordatorios",
+            color = Color.White
+        )
+    }
 }
+
+@Composable
+fun BotonSalir(navController: NavController) {
+    Button(
+        onClick = {
+            navController.navigate("HomePantalla") {
+                // Evita duplicar pantallas en el backstack
+                popUpTo("HomePantalla") { inclusive = true }
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Terracota) // usa tu color personalizado
+    ) {
+        Text(text = "Salir", color = Color.White)
+    }
+}
+
 
 @Composable
 fun MostrarRecordatorios(viewModel: RecordatorioViewModel, recordatorios_: List<Recordatorios>) {
@@ -92,7 +140,7 @@ fun MostrarRecordatorios(viewModel: RecordatorioViewModel, recordatorios_: List<
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFF3F51B5))
+                        colors = CardDefaults.cardColors(containerColor = VerdeMusgo)
                     ) {
                         Box(
                             modifier = Modifier

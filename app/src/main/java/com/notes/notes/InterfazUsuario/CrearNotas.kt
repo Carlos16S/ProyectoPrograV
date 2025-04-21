@@ -105,9 +105,9 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
 
             Spacer(modifier = Modifier.padding(5.dp))
 
-            ContenidoMultimedia(onUriSelected = { uri ->
-                viewModel.onContenidoMultimediaSeleccionado(uri)
-            })
+         //  ContenidoMultimedia(onUriSelected = { uri ->
+         //      viewModel.onContenidoMultimediaSeleccionado(uri)
+         //  })
 
             Spacer(modifier = Modifier.padding(5.dp))
         }
