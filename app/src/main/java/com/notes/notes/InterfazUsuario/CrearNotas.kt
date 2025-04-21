@@ -94,7 +94,7 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
             onTituloChanged = { viewModel.onTituloChanged(it) }
         )
 
-        // ✅ Mostramos el bloque SOLO si el switch está apagado
+
         if (!_Recordatorio) {
             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -112,10 +112,10 @@ fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavCo
             Spacer(modifier = Modifier.padding(5.dp))
         }
 
-        // ✅ Siempre mostrar el switch
+
         SelectorRecordatorio(viewModel = viewModel)
 
-        // ✅ Siempre mostrar el botón de guardar
+
         GuardarNota(
             navController = navController,
             viewModel = viewModel,
@@ -139,10 +139,10 @@ fun GuardarNota(navController: NavController,viewModel: CrearViewModel,notasFB: 
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Guardar ",
-                tint = Color.White // O el color que quieras para el ícono
+                tint = Color.White
             )
-            Spacer(modifier = Modifier.width(8.dp)) // Espacio entre ícono y texto (opcional)
-            Text("Guardar") // Este texto es opcional
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Guardar")
         }
     }
 
@@ -209,7 +209,7 @@ fun SelectorRecordatorio(viewModel: CrearViewModel) {
         }
     }
 
-    // Mostrar TimePicker
+
     LaunchedEffect(showTimePicker) {
         if (showTimePicker) {
             TimePickerDialog(
@@ -217,8 +217,9 @@ fun SelectorRecordatorio(viewModel: CrearViewModel) {
                 { _, hour, minute ->
                     calendar.set(Calendar.HOUR_OF_DAY, hour)
                     calendar.set(Calendar.MINUTE, minute)
-                    viewModel.setFechaHora(calendar) // Guardar fecha y hora
+                    viewModel.setFechaHora(calendar)
                     showTimePicker = false
+                    viewModel.programarNotificacion(context, titulo = viewModel.titulo)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
@@ -227,7 +228,7 @@ fun SelectorRecordatorio(viewModel: CrearViewModel) {
         }
     }
 
-    // Dialog personalizado (opcional)
+
     if (mostrarDialogo) {
         Dialog(onDismissRequest = { mostrarDialogo = false }) {
             ElegirFechaHora(
@@ -307,7 +308,7 @@ fun ElegirFechaHora(onFechaHoraSeleccionada: (Calendar) -> Unit) {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
             show()
         }
-        View(context) // Retornamos una vista vacía porque AndroidView requiere una vista
+        View(context)
     })
 }
 

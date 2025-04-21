@@ -14,7 +14,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra("titulo") ?: "Recordatorio"
-        val content = intent.getStringExtra("contenido") ?: "¡Tienes una nota pendiente!"
+        val content = intent.getStringExtra("contenido") ?: "¡Tienes un recordatorio!"
 
         val channelId = "recordatorio_channel"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

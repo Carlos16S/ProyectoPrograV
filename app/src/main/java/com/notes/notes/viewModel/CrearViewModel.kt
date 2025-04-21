@@ -75,6 +75,7 @@ fun agregarNotas(nota:NotasFB){
     fun programarNotificacion(context: Context, titulo: String) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("titulo", titulo)
+
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
