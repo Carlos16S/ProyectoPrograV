@@ -64,66 +64,76 @@ fun PantallaCrearNotas(viewModel: CrearViewModel,navController: NavController){
 }
 
 @Composable
-fun CrearNotas(modifier: Modifier,viewModel: CrearViewModel,navController: NavController) {
+fun CrearNotas(modifier: Modifier, viewModel: CrearViewModel, navController: NavController) {
 
     LaunchedEffect(Unit) {
         viewModel.limpiarCampos()
     }
     val titulo = viewModel.titulo
-    val  contenido =viewModel.contenido
-    val contenidoMultimedia=viewModel.contenidoMultimedia
-    val _Recordatorio=viewModel.is_Recordatorio
-    val multimediastring=contenidoMultimedia.toString()
+    val contenido = viewModel.contenido
+    val contenidoMultimedia = viewModel.contenidoMultimedia
+    val _Recordatorio = viewModel.is_Recordatorio
+    val multimediastring = contenidoMultimedia.toString()
 
-    val usuarioID=viewModel.userId.toString()
+    val usuarioID = viewModel.userId.toString()
     val notaAgregar = NotasFB(
-
-
         Titulo = titulo,
         Contenido = contenido,
-        ContenidoMultimedia =multimediastring ,
+        ContenidoMultimedia = multimediastring,
         recordatorio = _Recordatorio,
-        usuarioId =usuarioID
-
+        usuarioId = usuarioID
     )
-    val redordatorioAgregar = Recordatorios(titulo =titulo )
+    val redordatorioAgregar = Recordatorios(titulo = titulo)
 
-    Column {
-        TittuloNota(
-            titulo = titulo,
-            onTituloChanged = { viewModel.onTituloChanged(it) }
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 15.dp, vertical = 19.dp)
+    ) {
 
+        Box(modifier = Modifier.fillMaxWidth()) {
+            TittuloNota(
+                titulo = titulo,
+                onTituloChanged = { viewModel.onTituloChanged(it) }
+            )
+        }
 
         if (!_Recordatorio) {
-            Spacer(modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             ContenidoNota(
                 Contenido = contenido,
                 onContenidoChanged = { viewModel.onContenidoChanged(it) }
             )
 
-            Spacer(modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-         //  ContenidoMultimedia(onUriSelected = { uri ->
-         //      viewModel.onContenidoMultimediaSeleccionado(uri)
-         //  })
+            // ContenidoMultimedia(onUriSelected = { uri ->
+            //     viewModel.onContenidoMultimediaSeleccionado(uri)
+            // })
 
-            Spacer(modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
 
         SelectorRecordatorio(viewModel = viewModel)
 
 
-        GuardarNota(
-            navController = navController,
-            viewModel = viewModel,
-            notaAgregar
-        )
+        Spacer(modifier = Modifier.weight(1f))
+
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+
+        ) {
+            GuardarNota(
+                navController = navController,
+                viewModel = viewModel,
+                notaAgregar
+            )
+        }
     }
-
-
 }
 
 
@@ -177,7 +187,7 @@ fun SelectorRecordatorio(viewModel: CrearViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(8.dp)
     ) {
-        Text(text = "¿Agregar como recordatorio?")
+        Text(text = "¿Crear Recordatorio?")
         Spacer(modifier = Modifier.width(8.dp))
         Switch(
             checked = viewModel.is_Recordatorio,
