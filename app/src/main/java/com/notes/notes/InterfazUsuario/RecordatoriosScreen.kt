@@ -104,7 +104,7 @@ fun MostrarRecordatorios(viewModel: RecordatorioViewModel, recordatorios_: List<
                                 text = tituloSeguro,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = when {
-                                    longitudTitulo <= 10 -> 30.sp
+                                    longitudTitulo <= 10 -> 24.sp
                                     longitudTitulo <= 20 -> 24.sp
                                     longitudTitulo <= 30 -> 18.sp
                                     else -> 14.sp

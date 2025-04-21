@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,12 +71,13 @@ fun agregarNotas(nota:NotasFB){
     fun setFechaHora(calendar: android.icu.util.Calendar) {
         this.fechaHoraRecordatorio = calendar.timeInMillis
     }
-
     @SuppressLint("ScheduleExactAlarm")
     fun programarNotificacion(context: Context, titulo: String) {
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("titulo", titulo)
+        val tituloSeguro = titulo.ifBlank { "Recordatorio sin título" }
 
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("titulo", tituloSeguro)
+            putExtra("contenido", "¡Tienes un recordatorio!")
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -93,7 +95,11 @@ fun agregarNotas(nota:NotasFB){
                 pendingIntent
             )
         }
+
+        Log.d("Notificacion", "Notificación programada con título: $tituloSeguro")
     }
+
+
 
     fun limpiarCampos() {
         titulo = ""

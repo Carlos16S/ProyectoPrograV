@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.notes.notes.InterfazUsuario.nav.NavGraph_
+import com.notes.notes.ui.theme.NotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,7 +14,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-           NavGraph_()
+            NotesTheme {
+                NavGraph_()
+            }
         }
     }
 }
